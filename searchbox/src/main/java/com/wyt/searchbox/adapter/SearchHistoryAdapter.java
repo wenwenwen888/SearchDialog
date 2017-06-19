@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdapter.MyViewHolder> {
 
     private Context context;
-
     private ArrayList<String> historys = new ArrayList<>();
+    private boolean isSuggest;
 
     public SearchHistoryAdapter(Context context, ArrayList<String> historys) {
         this.context = context;
@@ -33,8 +33,12 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        if (isSuggest) {
+            holder.icon.setImageResource(R.drawable.ic_search_24dp);
+        } else {
+            holder.icon.setImageResource(R.drawable.ic_history_24dp);
+        }
         holder.historyInfo.setText(historys.get(position));
-
         holder.historyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,13 +46,11 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             }
         });
 
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iOnItemClickListener.onItemDeleteClick(historys.get(position));
-            }
-        });
+    }
 
+    public void notifyDatas(boolean isSuggest) {
+        this.isSuggest = isSuggest;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -59,12 +61,12 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView historyInfo;
-        ImageView delete;
+        ImageView icon;
 
         public MyViewHolder(View view) {
             super(view);
             historyInfo = (TextView) view.findViewById(R.id.tv_item_search_history);
-            delete = (ImageView) view.findViewById(R.id.iv_item_search_delete);
+            icon = (ImageView) view.findViewById(R.id.ic_sort);
         }
     }
 

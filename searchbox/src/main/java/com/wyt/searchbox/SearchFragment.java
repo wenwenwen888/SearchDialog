@@ -30,6 +30,7 @@ import com.wyt.searchbox.db.SearchHistoryDB;
 import com.wyt.searchbox.utils.KeyBoardUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Won on 2017/1/13.
@@ -38,9 +39,11 @@ import java.util.ArrayList;
 public class SearchFragment extends DialogFragment implements DialogInterface.OnKeyListener, ViewTreeObserver.OnPreDrawListener, CircularRevealAnim.AnimListener, IOnItemClickListener, View.OnClickListener {
 
     public static final String TAG = "SearchFragment";
+    public static final String HINT = "SearchFragment.HINT";
     private ImageView ivSearchBack;
     private EditText etSearchKeyword;
     private ImageView ivSearchSearch;
+    private ImageView ivSearchClearInput;
     private RecyclerView rvSearchHistory;
     private View searchUnderline;
     private TextView tvSearchClean;
@@ -57,8 +60,11 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
     //数据库
     private SearchHistoryDB searchHistoryDB;
 
-    public static SearchFragment newInstance() {
+    private String hintText;
+
+    public static SearchFragment newInstance(String hintTx) {
         Bundle bundle = new Bundle();
+        bundle.putString(HINT, hintTx);
         SearchFragment searchFragment = new SearchFragment();
         searchFragment.setArguments(bundle);
         return searchFragment;
@@ -67,6 +73,7 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hintText = getArguments().getString(HINT);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogStyle);
     }
 
@@ -88,7 +95,9 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
     private void init() {
         ivSearchBack = (ImageView) view.findViewById(R.id.iv_search_back);
         etSearchKeyword = (EditText) view.findViewById(R.id.et_search_keyword);
+        if (!TextUtils.isEmpty(hintText)) etSearchKeyword.setHint(hintText);
         ivSearchSearch = (ImageView) view.findViewById(R.id.iv_search_search);
+        ivSearchClearInput = (ImageView) view.findViewById(R.id.iv_search_clear_input);
         rvSearchHistory = (RecyclerView) view.findViewById(R.id.rv_search_history);
         searchUnderline = (View) view.findViewById(R.id.search_underline);
         tvSearchClean = (TextView) view.findViewById(R.id.tv_search_clean);
@@ -111,7 +120,6 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
         rvSearchHistory.setLayoutManager(new LinearLayoutManager(getContext()));//list类型
         searchHistoryAdapter = new SearchHistoryAdapter(getContext(), historys);
         rvSearchHistory.setAdapter(searchHistoryAdapter);
-
         //设置删除单个记录的监听
         searchHistoryAdapter.setOnItemClickListener(this);
         //监听编辑框文字改变
@@ -120,8 +128,8 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
         ivSearchBack.setOnClickListener(this);
         viewSearchOutside.setOnClickListener(this);
         ivSearchSearch.setOnClickListener(this);
+        ivSearchClearInput.setOnClickListener(this);
         tvSearchClean.setOnClickListener(this);
-
     }
 
     @Override
@@ -130,11 +138,13 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
             hideAnim();
         } else if (view.getId() == R.id.iv_search_search) {
             search();
+        } else if (view.getId() == R.id.iv_search_clear_input) {
+            etSearchKeyword.setText("");
         } else if (view.getId() == R.id.tv_search_clean) {
             searchHistoryDB.deleteAllHistory();
             historys.clear();
-            searchUnderline.setVisibility(View.GONE);
             searchHistoryAdapter.notifyDataSetChanged();
+            checkHistorySize();
         }
     }
 
@@ -204,39 +214,43 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
             String keyword = editable.toString();
             if (TextUtils.isEmpty(keyword.trim())) {
+                ivSearchClearInput.setVisibility(View.GONE);
                 setAllHistorys();
-                searchHistoryAdapter.notifyDataSetChanged();
+                searchHistoryAdapter.notifyDatas(false);
             } else {
-                setKeyWordHistorys(editable.toString());
+                ivSearchClearInput.setVisibility(View.VISIBLE);
+                iOnSearchClickListener.OnTextChanged(keyword);
             }
         }
     }
+
+    public void setSuggests(List<String> suggests) {
+        if (suggests.size() > 0) {
+            historys.clear();
+            historys.addAll(suggests);
+            searchHistoryAdapter.notifyDatas(true);
+            tvSearchClean.setVisibility(View.GONE);
+        }
+    }
+
 
     /**
      * 点击单个搜索记录
      */
     @Override
     public void onItemClick(String keyword) {
+        if (!allHistorys.contains(keyword)) {
+            allHistorys.add(keyword);
+            searchHistoryDB.insertHistory(keyword);//插入到数据库
+        }
         iOnSearchClickListener.OnSearchClick(keyword);
         hideAnim();
-    }
-
-    /**
-     * 删除单个搜索记录
-     */
-    @Override
-    public void onItemDeleteClick(String keyword) {
-        searchHistoryDB.deleteHistory(keyword);
-        historys.remove(keyword);
-        checkHistorySize();
-        searchHistoryAdapter.notifyDataSetChanged();
     }
 
     private void hideAnim() {
@@ -258,25 +272,16 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
     private void checkHistorySize() {
         if (historys.size() < 1) {
             searchUnderline.setVisibility(View.GONE);
+            tvSearchClean.setVisibility(View.GONE);
         } else {
             searchUnderline.setVisibility(View.VISIBLE);
+            tvSearchClean.setVisibility(View.VISIBLE);
         }
     }
 
     private void setAllHistorys() {
         historys.clear();
         historys.addAll(allHistorys);
-        checkHistorySize();
-    }
-
-    private void setKeyWordHistorys(String keyword) {
-        historys.clear();
-        for (String string : allHistorys) {
-            if (string.contains(keyword)) {
-                historys.add(string);
-            }
-        }
-        searchHistoryAdapter.notifyDataSetChanged();
         checkHistorySize();
     }
 
