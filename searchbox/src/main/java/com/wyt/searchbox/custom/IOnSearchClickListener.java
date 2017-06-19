@@ -8,4 +8,6 @@ public interface IOnSearchClickListener {
 
     void OnSearchClick(String keyword);
 
+    void OnTextChanged(String keyword);
+
 }

@@ -10,6 +10,9 @@ import android.widget.TextView;
 import com.wyt.searchbox.SearchFragment;
 import com.wyt.searchbox.custom.IOnSearchClickListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         toolbar.setTitle("SearchDialog");//标题
         setSupportActionBar(toolbar);
 
-        searchFragment = SearchFragment.newInstance();
+        searchFragment = SearchFragment.newInstance("搜索视频、番剧、up主或av号");
 
         toolbar.setOnMenuItemClickListener(this);
 
@@ -60,4 +63,14 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     public void OnSearchClick(String keyword) {
         searchInfo.setText(keyword);
     }
+
+    @Override
+    public void OnTextChanged(String keyword) {
+        List<String> rest = new ArrayList<>();
+        rest.add("123");
+        rest.add("456");
+        rest.add("789");
+        searchFragment.setSuggests(rest);
+    }
+
 }

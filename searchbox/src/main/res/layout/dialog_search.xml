@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="6dp"
-                android:src="@drawable/ic_back_24dp" />
+                android:src="@drawable/ic_back_24dp"/>
 
             <EditText
                 android:id="@+id/et_search_keyword"
@@ -34,33 +34,47 @@
                 android:padding="6dp"
                 android:singleLine="true"
                 android:textColorHint="@color/text_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/iv_search_clear_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:background="@color/transparent"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:paddingBottom="10dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/ic_close_16dp"/>
 
             <ImageView
                 android:id="@+id/iv_search_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="6dp"
-                android:src="@drawable/ic_search_bg_24dp" />
+                android:src="@drawable/ic_search_bg_24dp"/>
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/divider" />
+            android:background="@color/divider"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_search_history"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <View
             android:id="@+id/search_underline"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/divider" />
+            android:background="@color/divider"/>
 
         <TextView
             android:id="@+id/tv_search_clean"
@@ -71,11 +85,11 @@
             android:padding="10dp"
             android:text="清空搜索记录"
             android:textColor="@color/text_grey"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
     </LinearLayout>
 
     <View
         android:id="@+id/view_search_outside"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 </LinearLayout>
