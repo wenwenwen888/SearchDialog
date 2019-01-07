@@ -17,13 +17,20 @@
 
 5,参考了该po的[文章](http://lhunter.org/2016/08/06/%E4%BB%BF%20Bilibili%20%E6%90%9C%E7%B4%A2%E6%95%88%E6%9E%9C/) ,感谢
 
+6,感谢各位提交Issues,隔了这么久才更新,对8起
+
+<img src="https://wx3.sinaimg.cn/mw690/7347c889ly1fyay81hj81g202x02y3yf.gif">
+
+Update log
+-----------
++ 1.0.1版本：修复对aapt2支持，增添判断二次打开问题。
 
 Usage
 --------
 
 With Gradle:
 ```groovy
-  compile 'com.wenwenwen888:searchbox:1.0.0'
+  implementation 'com.wenwenwen888:searchbox:1.0.1'
 ```
 
 
@@ -45,7 +52,7 @@ How to use
 ```
 第三句 , 显示搜索框:
 ```java
-  searchFragment.show(getSupportFragmentManager(),SearchFragment.TAG);
+  searchFragment.showFragment(getSupportFragmentManager(),SearchFragment.TAG);
 ```
  
 # License
