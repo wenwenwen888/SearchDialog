@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search://点击搜索
-                searchFragment.show(getSupportFragmentManager(), SearchFragment.TAG);
+                searchFragment.showFragment(getSupportFragmentManager(), SearchFragment.TAG);
                 break;
         }
         return true;

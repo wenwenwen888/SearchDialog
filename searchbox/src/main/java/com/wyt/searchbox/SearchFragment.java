@@ -3,6 +3,7 @@ package com.wyt.searchbox;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -58,10 +59,7 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
     private SearchHistoryDB searchHistoryDB;
 
     public static SearchFragment newInstance() {
-        Bundle bundle = new Bundle();
-        SearchFragment searchFragment = new SearchFragment();
-        searchFragment.setArguments(bundle);
-        return searchFragment;
+        return new SearchFragment();
     }
 
     @Override
@@ -86,13 +84,13 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
     }
 
     private void init() {
-        ivSearchBack = (ImageView) view.findViewById(R.id.iv_search_back);
-        etSearchKeyword = (EditText) view.findViewById(R.id.et_search_keyword);
-        ivSearchSearch = (ImageView) view.findViewById(R.id.iv_search_search);
-        rvSearchHistory = (RecyclerView) view.findViewById(R.id.rv_search_history);
-        searchUnderline = (View) view.findViewById(R.id.search_underline);
-        tvSearchClean = (TextView) view.findViewById(R.id.tv_search_clean);
-        viewSearchOutside = (View) view.findViewById(R.id.view_search_outside);
+        ivSearchBack = view.findViewById(R.id.iv_search_back);
+        etSearchKeyword = view.findViewById(R.id.et_search_keyword);
+        ivSearchSearch = view.findViewById(R.id.iv_search_search);
+        rvSearchHistory = view.findViewById(R.id.rv_search_history);
+        searchUnderline = view.findViewById(R.id.search_underline);
+        tvSearchClean = view.findViewById(R.id.tv_search_clean);
+        viewSearchOutside = view.findViewById(R.id.view_search_outside);
 
         //实例化动画效果
         mCircularRevealAnim = new CircularRevealAnim();
@@ -122,6 +120,15 @@ public class SearchFragment extends DialogFragment implements DialogInterface.On
         ivSearchSearch.setOnClickListener(this);
         tvSearchClean.setOnClickListener(this);
 
+    }
+
+    /**
+     * 显示Fragment，防止多次打开导致崩溃
+     */
+    public void showFragment(FragmentManager fragmentManager, String tag) {
+        if (!this.isAdded()) {
+            this.show(fragmentManager, tag);
+        }
     }
 
     @Override
